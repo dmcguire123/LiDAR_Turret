@@ -10,4 +10,7 @@ This process continues until the tilt motors reach a pretermined angle, establis
 
 All of the above POSITIONS are established in the code before running the Python Script. More detail for what values must be changed are available in the comments of the code itself.
 
+Other elements that need to be altered in the code beforehand are the serial USB Port. (For example Windows uses COM7 or something close to it)
+
+
 
