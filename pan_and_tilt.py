@@ -63,9 +63,9 @@ DXL_ID                      = 1                 #DXL_ID = 1 (2 & 3 refer to Moto
 
 
 # ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
-USB_PORT = input("\n\nPlease enter your serial Port.\n (Examples, Windows: COM*, Linux: /dev/ttyUSB*, Mac: /dev/tty.usbserial-*\nENTER HERE:")
+#USB_PORT = input("\n\nPlease enter your serial Port.\n (Examples, Windows: COM*, Linux: /dev/ttyUSB*, Mac: /dev/tty.usbserial-*\nENTER HERE:")
 # ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
-DEVICENAME                  = USB_PORT
+DEVICENAME                  = "COM7" #USB_PORT
 
 
 TORQUE_ENABLE               = 1     # Value for enabling the torque
