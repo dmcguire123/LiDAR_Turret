@@ -6,6 +6,8 @@
 
 import os
 import time
+import keyboard
+import sys
 
 if os.name == 'nt':
     import msvcrt
@@ -29,7 +31,7 @@ from dynamixel_sdk import * # Uses Dynamixel SDK library
 
 MY_DXL = 'X_SERIES'       # X330 (5.0 V recommended), X430, X540, 2X430
 
-
+#print("\nWhen you're ready to quit, just hit ESC!...")
 
 # Control table address
 if MY_DXL == 'X_SERIES' or MY_DXL == 'MX_SERIES':
@@ -61,7 +63,10 @@ DXL_ID                      = 1                 #DXL_ID = 1 (2 & 3 refer to Moto
 
 
 # ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
-DEVICENAME                  = 'COM7'
+USB_PORT = input("Please enter your serial Port.\n (Examples, Windows: COM*, Linux: /dev/ttyUSB*, Mac: /dev/tty.usbserial-*\nENTER HERE:")
+# ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
+DEVICENAME                  = USB_PORT
+
 
 TORQUE_ENABLE               = 1     # Value for enabling the torque
 TORQUE_DISABLE              = 0     # Value for disabling the torque
@@ -118,64 +123,75 @@ elif dxl_error != 0:
 else:
     print("Dynamixel has been successfully connected")
 
-while 1:
-
-    #print("Press any key to continue! (or press ESC to quit!)")
-    #if getch() == chr(0x1b):
-    #    break
-    if STEP_TILT_VALUE > 2200:     #When should the tilt motor end     - tilt goes from 101 degrees to 255 degrees... 101 = 1151, 255 = 2887
-        #print("STEP TILT VALUE HAS REACHED:%03d Press any key to reset! (or press ESC to quit!)" % (STEP_TILT_VALUE))
-        STEP_TILT_VALUE = 2030      #where our tilt motor resets
-
-
-
-
-    # Write goal position
-    if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
-        dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
-    else:
-        dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-
+print("Press any key to continue! (or press ESC to quit!)")
+if getch():
     while 1:
-        # Read present position
 
+
+        #if STEP_TILT_VALUE <3000:
+            #print("Press any key to continue! (or press ESC to quit!)")
+        #    if getch() == chr(0x1b):
+        #        break
+        #print("Press any key to continue! (or press ESC to quit!)")
+        #if getch() == chr(0x1b):
+        #    break
+        if STEP_TILT_VALUE > 2200:     #When should the tilt motor end     - tilt goes from 101 degrees to 255 degrees... 101 = 1151, 255 = 2887
+            #print("STEP TILT VALUE HAS REACHED:%03d Press any key to reset! (or press ESC to quit!)" % (STEP_TILT_VALUE))
+            STEP_TILT_VALUE = 2030      #where our tilt motor resets
+
+
+
+
+        # Write goal position
         if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
-            dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, DXL_ID, ADDR_PRESENT_POSITION)
+            dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
         else:
-            dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, DXL_ID, ADDR_PRESENT_POSITION)
+            dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
             print("%s" % packetHandler.getRxPacketError(dxl_error))
 
-        print("[ID:%03d] GoalPos:%03d  PresPos:%03d" % (DXL_ID, dxl_goal_position[index], dxl_present_position))
+        while 1:
+            # Read present position
 
-        if not abs(dxl_goal_position[index] - dxl_present_position) > DXL_MOVING_STATUS_THRESHOLD:
-            break
 
-    # Change goal position   ; This code loops the turret back and forth
-    if index == 0:
-        index = 1
-        STEP_TILT_VALUE = STEP_TILT_VALUE + 10 #This increases the tilt by approximately one degree
-        #print("[DXL GOAL POSITION:%03d] GoalPos:%03d  PresPos:%03d" % (dxl_goal_position[], dxl_goal_position[index], dxl_present_position))
-        dxl_goal_position = [DXL_MINIMUM_POSITION_VALUE,STEP_TILT_VALUE, DXL_MAXIMUM_POSITION_VALUE, STEP_TILT_VALUE]         # Goal position
-        print(dxl_goal_position)
-        DXL_ID = 2
-    elif index == 1:
-        index = 2
-        DXL_ID = 1
-    elif index == 2:
-        index = 3
-        STEP_TILT_VALUE = STEP_TILT_VALUE + 10
-        dxl_goal_position = [DXL_MINIMUM_POSITION_VALUE,STEP_TILT_VALUE, DXL_MAXIMUM_POSITION_VALUE, STEP_TILT_VALUE]         # Goal position
-        DXL_ID = 2
-    elif index == 3:
-        index = 0
-        DXL_ID = 1
+            if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
+                dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, DXL_ID, ADDR_PRESENT_POSITION)
+            else:
+                dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, DXL_ID, ADDR_PRESENT_POSITION)
+                if keyboard.is_pressed('Esc'):
+                    print("\nYou pressed Esc, so exiting...")
+                    sys.exit(0)
+            if dxl_comm_result != COMM_SUCCESS:
+                print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+            elif dxl_error != 0:
+                print("%s" % packetHandler.getRxPacketError(dxl_error))
+
+            #print("[ID:%03d] GoalPos:%03d  PresPos:%03d" % (DXL_ID, dxl_goal_position[index], dxl_present_position))
+
+            if not abs(dxl_goal_position[index] - dxl_present_position) > DXL_MOVING_STATUS_THRESHOLD:
+                break
+
+        # Change goal position   ; This code loops the turret back and forth
+        if index == 0:
+            index = 1
+            STEP_TILT_VALUE = STEP_TILT_VALUE + 10 #This increases the tilt by approximately one degree
+            #print("[DXL GOAL POSITION:%03d] GoalPos:%03d  PresPos:%03d" % (dxl_goal_position[], dxl_goal_position[index], dxl_present_position))
+            dxl_goal_position = [DXL_MINIMUM_POSITION_VALUE,STEP_TILT_VALUE, DXL_MAXIMUM_POSITION_VALUE, STEP_TILT_VALUE]         # Goal position
+            #print(dxl_goal_position)
+            DXL_ID = 2
+        elif index == 1:
+            index = 2
+            DXL_ID = 1
+        elif index == 2:
+            index = 3
+            STEP_TILT_VALUE = STEP_TILT_VALUE + 10
+            dxl_goal_position = [DXL_MINIMUM_POSITION_VALUE,STEP_TILT_VALUE, DXL_MAXIMUM_POSITION_VALUE, STEP_TILT_VALUE]         # Goal position
+            DXL_ID = 2
+        elif index == 3:
+            index = 0
+            DXL_ID = 1
 
 
 
