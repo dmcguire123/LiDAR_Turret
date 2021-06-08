@@ -29,3 +29,4 @@ Key difference is that when started it will ask for an angle and then proceed to
 
 
 
+<img width="582" alt="Turret Orientation" src="https://user-images.githubusercontent.com/37347754/121200152-841f3800-c841-11eb-8442-06c187f5db97.png">
