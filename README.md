@@ -21,12 +21,12 @@ Much of the code is similar to the above Pan_and_tilt script.
 Key difference is that when started it will ask for an angle and then proceed to aim the turret at that angle. ANd won't move until given a new target angle.
 
 
-# Angle Cheat Sheet Uploaded Below:
-![Turret Angles_210604_161137](https://user-images.githubusercontent.com/24493952/120858189-72434980-c550-11eb-9f3b-666824c16153.jpg)
-
+# Angle Cheat Sheet(Pan) Uploaded Below:
+<img width="582" alt="Turret Orientation" src="https://user-images.githubusercontent.com/37347754/121200152-841f3800-c841-11eb-8442-06c187f5db97.png">
+# Angle Cheat Sheet(Tilt) Uploaded Below:
 ![Turret Angles_SideView](https://user-images.githubusercontent.com/24493952/120858223-7ec7a200-c550-11eb-8aca-8b90030b06cd.jpg)
 
 
 
 
-<img width="582" alt="Turret Orientation" src="https://user-images.githubusercontent.com/37347754/121200152-841f3800-c841-11eb-8442-06c187f5db97.png">
+
